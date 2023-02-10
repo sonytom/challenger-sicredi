@@ -5,7 +5,9 @@ plugins {
 }
 
 
-
+dependencies {
+	implementation project(":commons")
+}
 
 tasks.register("prepareKotlinBuildScriptModel"){}
 

@@ -7,6 +7,8 @@ plugins {
 
 dependencies {
 	implementation project(":impl")
+	implementation project(":commons")
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.2'
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}
