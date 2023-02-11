@@ -4,11 +4,9 @@ import br.com.challengersicredi.controller.v1.schedule.model.mapper.ScheduleMode
 import br.com.challengersicredi.controller.v1.schedule.model.request.ScheduleModelRequest;
 import br.com.challengersicredi.impl.schedule.ScheduleService;
 import br.com.challengersicredi.impl.schedule.model.response.ScheduleModelImplResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,8 +17,13 @@ public class ScheduleController {
     ScheduleService service;
 
     @PostMapping("/save")
-    public Mono<ScheduleModelImplResponse> greeting(@RequestBody ScheduleModelRequest scheduleModelRequest) {
+    public Mono<ScheduleModelImplResponse> greeting(@RequestBody @Valid ScheduleModelRequest scheduleModelRequest) {
         return service.save(ScheduleModelMapper.mapFrom(scheduleModelRequest));
+    }
+
+    @PatchMapping("/{scheduleName}")
+    public Mono<ScheduleModelImplResponse> openSessionRequest(@PathVariable(value = "scheduleName") String scheduleName) {
+        return service.openSession(scheduleName);
     }
 
 }
