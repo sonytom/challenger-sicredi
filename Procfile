@@ -1,1 +1,0 @@
-web: ./gradlew run -Dnetty.http.port=8080
