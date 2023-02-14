@@ -1,1 +1,1 @@
-web: java -jar build/libs/challenger-sicredi-0.0.1-SNAPSHOT.jar --spring.http.server.request-timeout=120s
+web: java -jar build/libs/challenger-sicredi-0.0.1-SNAPSHOT.jar --spring.http.server.request-timeout=120s --server.port=8080
