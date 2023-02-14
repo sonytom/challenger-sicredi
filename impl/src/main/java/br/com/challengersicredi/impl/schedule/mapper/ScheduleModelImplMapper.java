@@ -2,11 +2,11 @@ package br.com.challengersicredi.impl.schedule.mapper;
 
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
 import br.com.challengersicredi.impl.schedule.entity.ScheduleModelEntity;
-import br.com.challengersicredi.impl.schedule.model.request.ScheduleModelImplRequest;
+import br.com.challengersicredi.impl.schedule.model.request.ScheduleModelImpl;
 import br.com.challengersicredi.impl.schedule.model.response.ScheduleModelImplResponse;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Component
 public class ScheduleModelImplMapper {
@@ -24,14 +24,12 @@ public class ScheduleModelImplMapper {
                 .build();
     }
 
-    public static ScheduleModelEntity mapTo(ScheduleModelImplRequest scheduleModelImplRequest) {
+    public static ScheduleModelEntity mapTo(ScheduleModelImpl scheduleModelImpl) {
         return ScheduleModelEntity.builder()
-                .name(scheduleModelImplRequest.getName())
-                .createAt(LocalTime.now())
-                .OpenAt(LocalTime.now())
-                .expiration(LocalTime.now().plusMinutes(1))
-                .status(ScheduleStatusEnum.OPEN)
-                .totalVotes(2)
+                .name(scheduleModelImpl.getName())
+                .createAt(LocalDateTime.now())
+                .OpenAt(LocalDateTime.now())
+                .status(ScheduleStatusEnum.CREATED)
                 .build();
     }
 }

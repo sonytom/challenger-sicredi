@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/v1/schedule")
+@RequestMapping(value = "/v1/schedules")
 public class ScheduleController {
 
     ScheduleService service;

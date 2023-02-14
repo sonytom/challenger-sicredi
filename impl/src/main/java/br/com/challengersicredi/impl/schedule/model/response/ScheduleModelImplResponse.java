@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,9 +17,9 @@ import java.time.LocalTime;
 public class ScheduleModelImplResponse {
     private String id;
     private String name;
-    private LocalTime createAt;
-    private LocalTime OpenAt;
-    private LocalTime expiration;
+    private LocalDateTime createAt;
+    private LocalDateTime OpenAt;
+    private LocalDateTime expiration;
     private ScheduleStatusEnum status;
     private Integer totalVotes;
 }

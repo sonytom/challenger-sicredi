@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 @Data
 @Builder
 @Component
-public class ScheduleModelImplRequest {
+public class ScheduleModelImpl {
     private String name;
 }
