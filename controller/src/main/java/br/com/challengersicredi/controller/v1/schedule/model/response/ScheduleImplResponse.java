@@ -7,11 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class ScheduleModelImplResponse {
+public class ScheduleImplResponse {
     private String id;
     private String name;
     private LocalTime createAt;

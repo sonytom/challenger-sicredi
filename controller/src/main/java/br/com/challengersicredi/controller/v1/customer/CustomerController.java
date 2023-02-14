@@ -13,13 +13,13 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/v1/customer")
+@RequestMapping(value = "/v1/customers")
 public class CustomerController {
- private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @PostMapping
+    @PostMapping("/save")
     public Mono<CustomerImplReponse> customerSave(@RequestBody CustomerModelRequest customerModelRequest) {
-      return  customerService.saveCustomer(CustomerMapperRequest.mapFromImpl(customerModelRequest));
+        return customerService.saveCustomer(CustomerMapperRequest.mapFromImpl(customerModelRequest));
     }
 
 }
