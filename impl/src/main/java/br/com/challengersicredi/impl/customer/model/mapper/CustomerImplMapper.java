@@ -1,4 +1,4 @@
-package br.com.challengersicredi.impl.customer.model;
+package br.com.challengersicredi.impl.customer.model.mapper;
 
 import br.com.challengersicredi.impl.customer.model.entity.CustomerModelEntity;
 import br.com.challengersicredi.impl.customer.model.request.CustomerModelImpl;

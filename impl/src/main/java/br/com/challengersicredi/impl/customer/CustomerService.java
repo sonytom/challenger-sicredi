@@ -1,6 +1,6 @@
 package br.com.challengersicredi.impl.customer;
 
-import br.com.challengersicredi.impl.customer.model.CustomerImplMapper;
+import br.com.challengersicredi.impl.customer.model.mapper.CustomerImplMapper;
 import br.com.challengersicredi.impl.customer.model.repository.CustomerRepository;
 import br.com.challengersicredi.impl.customer.model.request.CustomerModelImpl;
 import br.com.challengersicredi.impl.customer.model.response.CustomerImplReponse;
