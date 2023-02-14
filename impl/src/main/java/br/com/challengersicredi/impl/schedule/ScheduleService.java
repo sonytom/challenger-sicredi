@@ -3,7 +3,7 @@ package br.com.challengersicredi.impl.schedule;
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
 import br.com.challengersicredi.impl.schedule.mapper.ScheduleModelImplMapper;
 import br.com.challengersicredi.impl.schedule.model.request.ScheduleModelImpl;
-import br.com.challengersicredi.impl.schedule.model.response.ScheduleModelImplResponse;
+import br.com.challengersicredi.impl.schedule.model.response.ScheduleImplResponse;
 import br.com.challengersicredi.impl.schedule.repository.ScheduleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,29 +16,34 @@ import static br.com.challengersicredi.impl.schedule.mapper.ScheduleModelImplMap
 @Service
 @AllArgsConstructor
 public class ScheduleService {
-    private ScheduleRepository scheduleRepository;
+    private final ScheduleRepository scheduleRepository;
 
     private static final Integer DEFAULT_EXPIRATION_TIME = 1;
 
-    public Mono<ScheduleModelImplResponse> save(ScheduleModelImpl scheduleModelImpl) {
+    public Mono<ScheduleImplResponse> save(ScheduleModelImpl scheduleModelImpl) {
         return scheduleRepository.save(mapTo(scheduleModelImpl))
                 .map(ScheduleModelImplMapper::mapToResponse)
                 .switchIfEmpty(Mono.empty());
     }
 
-    public Mono<ScheduleModelImplResponse> openSession(String scheduleName) {
-
+    public Mono<ScheduleImplResponse> openSession(String scheduleName, Integer minutesSession) {
         return scheduleRepository.findByName(scheduleName)
-                .filter(it -> it.getStatus().equals(ScheduleStatusEnum.CREATED))
-                .map(it -> {                                         // colocar na request body
-                    it.setExpiration(LocalDateTime.now().plusMinutes(DEFAULT_EXPIRATION_TIME));
+                .filter(schedule -> schedule.getStatus().equals(ScheduleStatusEnum.CREATED))
+                .map(it -> {
+                    it.setExpiration(LocalDateTime.now().plusMinutes(getMinutes(minutesSession)));
                     it.setOpenAt(LocalDateTime.now());
                     it.setStatus(ScheduleStatusEnum.OPEN);
                     it.setTotalVotes(0);
                     return it;
                 })
-                .map(it -> scheduleRepository.save(it))
+                .map(scheduleRepository::save)
                 .flatMap(scheduleSession -> scheduleSession.map(ScheduleModelImplMapper::mapToResponse))
                 .switchIfEmpty(Mono.empty());
+    }
+
+    private static Integer getMinutes(Integer minutesSession) {
+        if (minutesSession == null || minutesSession <= 0 || minutesSession > 60)
+            return DEFAULT_EXPIRATION_TIME;
+        return minutesSession;
     }
 }

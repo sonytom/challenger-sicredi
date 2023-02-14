@@ -3,17 +3,15 @@ package br.com.challengersicredi.impl.schedule.mapper;
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
 import br.com.challengersicredi.impl.schedule.entity.ScheduleModelEntity;
 import br.com.challengersicredi.impl.schedule.model.request.ScheduleModelImpl;
-import br.com.challengersicredi.impl.schedule.model.response.ScheduleModelImplResponse;
+import br.com.challengersicredi.impl.schedule.model.response.ScheduleImplResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
 public class ScheduleModelImplMapper {
-
-
-    public static ScheduleModelImplResponse mapToResponse(ScheduleModelEntity schedule) {
-        return ScheduleModelImplResponse.builder()
+    public static ScheduleImplResponse mapToResponse(ScheduleModelEntity schedule) {
+        return ScheduleImplResponse.builder()
                 .id(schedule.getId())
                 .name(schedule.getName())
                 .createAt(schedule.getCreateAt())

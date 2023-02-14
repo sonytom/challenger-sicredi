@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Component
-public class ScheduleModelImplResponse {
+public class ScheduleImplResponse {
     private String id;
     private String name;
     private LocalDateTime createAt;

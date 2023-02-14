@@ -2,7 +2,7 @@ package br.com.challengersicredi.impl.vote;
 
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
 import br.com.challengersicredi.commons.schedule.enums.VoteOptionsType;
-import br.com.challengersicredi.impl.schedule.entity.ScheduleModelEntity;
+import br.com.challengersicredi.commons.schedule.exeption.DataIntegrityViolationException;
 import br.com.challengersicredi.impl.schedule.repository.ScheduleRepository;
 import br.com.challengersicredi.impl.vote.entity.VoteModelEntity;
 import br.com.challengersicredi.impl.vote.mapper.VoteModelImplMapper;
@@ -20,11 +20,10 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class VoteService {
-    private VoteRepository voteRepository;
-    private ScheduleRepository scheduleRepository;
+    private final VoteRepository voteRepository;
+    private final ScheduleRepository scheduleRepository;
 
     public Mono<VoteModelImplResponse> voteScheduleSession(VoteModelImpl voteModel) {
-
         return scheduleRepository
                 .findByName(voteModel.getScheduleName())
                 .filter(schedule -> schedule.getStatus().equals(ScheduleStatusEnum.OPEN))
@@ -33,37 +32,45 @@ public class VoteService {
 
                     if (LocalDateTime.now().isAfter(schedule.getExpiration())) {
                         schedule.setStatus(ScheduleStatusEnum.CLOSED);
-
                         scheduleRepository.save(schedule).subscribe();
                         throw new RuntimeException();
                     }
 
-                    voteRepository.findByUserIdAndScheduleName(
-                            schedule.getId(), schedule.getName()
-                    ).map(votes -> {
-                        if (votes != null) throw new RuntimeException();
+                    voteRepository.findByUserIdAndScheduleName(voteModel.getUserId(), voteModel.getScheduleName())
+                            .map(user -> Mono.error(new DataIntegrityViolationException("Error")))
+                            .doOnNext( a -> {
+                                schedule.setTotalVotes(schedule.getTotalVotes() + 1);
+//
+                                 VoteModelImpl.builder()
+                                        .userId(voteModel.getUserId())
+                                        .name(voteModel.getName())
+                                        .votedDate(LocalDateTime.now())
+                                        .voteOptionType(voteModel.getVoteOptionType())
+                                        .scheduleName(voteModel.getScheduleName())
+                                        .build();
 
-                        schedule.setTotalVotes(schedule.getTotalVotes() + 1);
 
-                       return VoteModelImpl.builder()
-                                .userId(voteModel.getUserId())
-                                .name(voteModel.getName())
-                                .votedDate(LocalDateTime.now())
-                                .voteOptionType(voteModel.getVoteOptionType())
-                                .scheduleName(voteModel.getScheduleName())
-                                .build();
-                    } ).subscribe();
+                            } )
+                            .subscribe();
+
+
                 }).map(it -> voteRepository.save(VoteModelEntity.builder()
+                        .id(it.getId())
+                        .userId(voteModel.getUserId())
+                        .name(it.getName())
+                        .votedDate(LocalDateTime.now())
+                        .voteOptionType(voteModel.getVoteOptionType())
+                        .scheduleName(it.getName())
                         .build()))
                 .flatMap(it -> it.map(VoteModelImplMapper::mapToResponse))
                 .switchIfEmpty(Mono.empty());
     }
 
     public Mono<VoteModelImplResponse> countVotes(String scheduleName, VoteOptionsType optionsType) {
-    return scheduleRepository.findByName(scheduleName).filter(Objects::nonNull)
-            .flatMap(a -> voteRepository.countByScheduleNameAndVoteOptionType(scheduleName,optionsType)
-                    .map(newI -> VoteModelImplResponse.builder()
-                            .id(newI.getId())
-                            .build()));
+        return scheduleRepository.findByName(scheduleName).filter(Objects::nonNull)
+                .flatMap(a -> voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, optionsType)
+                        .map(newI -> VoteModelImplResponse.builder()
+                                .id(newI.getId())
+                                .build()));
     }
 }

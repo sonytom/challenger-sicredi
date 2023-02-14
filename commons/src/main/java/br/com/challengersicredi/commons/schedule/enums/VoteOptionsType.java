@@ -6,13 +6,15 @@ import lombok.Getter;
 
 import java.util.EnumSet;
 import java.util.Objects;
+
 @Getter
 @AllArgsConstructor
 public enum VoteOptionsType {
     YES("SIM"),
     NO("NÃO");
 
-    private String value;
+    private final String value;
+
     public static VoteOptionsType fromValue(String value) throws Exception {
         return EnumSet.allOf(VoteOptionsType.class).stream()
                 .filter(Objects::nonNull)
@@ -20,5 +22,4 @@ public enum VoteOptionsType {
                 .findFirst()
                 .orElseThrow(Exception::new);
     }
-
 }

@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface VoteRepository extends ReactiveMongoRepository<VoteModelEntity, String> {
-    Mono<VoteModelEntity> findByUserIdAndScheduleName(String userID,String name);
+    Mono<VoteModelEntity> findByUserIdAndScheduleName(String userID, String name);
+
     Mono<VoteModelEntity> countByScheduleNameAndVoteOptionType(String schedulerName, VoteOptionsType voteOptionsType);
 }
