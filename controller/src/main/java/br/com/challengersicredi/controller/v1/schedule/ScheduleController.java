@@ -23,7 +23,7 @@ public class ScheduleController {
 
     @PatchMapping("/{scheduleName}/{minutesSession}")
     public Mono<ScheduleImplResponse> openSessionRequest(@PathVariable(value = "scheduleName") String scheduleName,
-                                                         @PathVariable(value = "minutesSession") Integer minutes) {
+                                                         @PathVariable(value = "minutesSession", required = false) Integer minutes) {
         return service.openSession(scheduleName, minutes);
     }
 }
