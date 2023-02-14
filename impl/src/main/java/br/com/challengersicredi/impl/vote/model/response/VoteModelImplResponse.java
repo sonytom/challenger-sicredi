@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class VoteModelImplResponse {
     private String id;
     private String userId;
     private String name;
-    private LocalTime votedDate;
+    private LocalDateTime votedDate;
     private VoteOptionsType voteOptionType;
     private String scheduleName;
 }

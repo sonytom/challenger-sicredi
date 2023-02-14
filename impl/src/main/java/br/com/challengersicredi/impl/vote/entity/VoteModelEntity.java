@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class VoteModelEntity {
     private String id;
     private String userId;
     private String name;
-    private LocalTime votedDate;
+    private LocalDateTime votedDate;
     private VoteOptionsType voteOptionType;
     private String scheduleName;
 }
