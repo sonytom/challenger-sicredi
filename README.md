@@ -5,7 +5,14 @@ Overview do projeto
 Ele foi feito em multmodules e webflux, para assim ter uma segurança maior de suas entidades principais e e ter uma boa escalabilidade.
  Para que o os módulos de acesso mais próximo ao usuário seja abstraido do resto da aplicação, é necessário ter vários arquivos gradle e assim cada um tendo suas dependências relevantes e a implementação de dos projetos que seja mais relevante para funcionar, exemplo o controller nunca vai ter acesso a service apenas a service vai ter acesso a controller.
 
-Instalação do projeto: 
+Como baixar e  Executar o projeto : 
+- git clone https://github.com/sonytom/challenger-sicredi.git
+- cd challenger-sicredi
+- 
+
+
+
+
 
 - Escolher a ide de sua preferencia.
 - Abrir a pasta chamada challenger sicredi.
