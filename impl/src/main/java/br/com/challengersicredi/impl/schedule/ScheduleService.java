@@ -1,6 +1,7 @@
 package br.com.challengersicredi.impl.schedule;
 
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
+import br.com.challengersicredi.commons.schedule.exeption.ResourceNotFound;
 import br.com.challengersicredi.impl.schedule.mapper.ScheduleModelImplMapper;
 import br.com.challengersicredi.impl.schedule.model.request.ScheduleModelImpl;
 import br.com.challengersicredi.impl.schedule.model.response.ScheduleImplResponse;
@@ -23,7 +24,7 @@ public class ScheduleService {
     public Mono<ScheduleImplResponse> save(ScheduleModelImpl scheduleModelImpl) {
         return scheduleRepository.save(mapTo(scheduleModelImpl))
                 .map(ScheduleModelImplMapper::mapToResponse)
-                .switchIfEmpty(Mono.empty());
+                .switchIfEmpty(Mono.error(new ResourceNotFound()));
     }
 
     public Mono<ScheduleImplResponse> openSession(String scheduleName, Integer minutesSession) {
@@ -38,7 +39,7 @@ public class ScheduleService {
                 })
                 .map(scheduleRepository::save)
                 .flatMap(scheduleSession -> scheduleSession.map(ScheduleModelImplMapper::mapToResponse))
-                .switchIfEmpty(Mono.empty());
+                .switchIfEmpty(Mono.error(new ResourceNotFound()));
     }
 
     private static Integer getMinutes(Integer minutesSession) {

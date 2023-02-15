@@ -1,34 +1,36 @@
 package br.com.challengersicredi.commons.schedule.exeption;
 
 
-import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public HttpEntity<ErrorDetails> dataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(true));
-        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    @ExceptionHandler(value = { DuplicateKeys.class, RuntimeException.class })
+    protected Mono<ResponseEntity<Object>> handleConflict(RuntimeException ex, ServerWebExchange request) {
+        String bodyOfResponse = "This value already exists in DB";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDetails resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        return new ErrorDetails(ex.getMessage(), request.getDescription(true));
+    @ExceptionHandler(value = { SessionClosed.class })
+    protected Mono<ResponseEntity<Object>> sessionClosed(RuntimeException ex, ServerWebExchange request) {
+        String bodyOfResponse = "Session Closed, create another session";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.PRECONDITION_FAILED, request);
     }
 
-    // global
-    @ExceptionHandler(Exception.class)
-    public HttpEntity<ErrorDetails> globleExcpetionHandler(Exception ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(true));
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(value = { ResourceNotFound.class })
+    protected Mono<ResponseEntity<Object>> resourceNotFound(RuntimeException ex, ServerWebExchange request) {
+        String bodyOfResponse = "Resource not found";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.PRECONDITION_FAILED, request);
     }
 }

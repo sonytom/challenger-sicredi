@@ -1,5 +1,6 @@
 package br.com.challengersicredi.impl.customer;
 
+import br.com.challengersicredi.commons.schedule.exeption.DuplicateKeys;
 import br.com.challengersicredi.impl.customer.model.mapper.CustomerImplMapper;
 import br.com.challengersicredi.impl.customer.model.repository.CustomerRepository;
 import br.com.challengersicredi.impl.customer.model.request.CustomerModelImpl;
@@ -17,7 +18,7 @@ public class CustomerService {
     public Mono<CustomerImplReponse> saveCustomer(CustomerModelImpl customerModel) {
         return customerRepository.save(CustomerImplMapper.mapFromEntity(customerModel))
                 .map(CustomerImplMapper::mapFromResponse)
-                .switchIfEmpty(Mono.empty());
+                .switchIfEmpty(Mono.error(DuplicateKeys::new));
     }
 }
 
