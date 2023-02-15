@@ -2,11 +2,13 @@ package br.com.challengersicredi.impl.vote;
 
 import br.com.challengersicredi.commons.schedule.enums.ScheduleStatusEnum;
 import br.com.challengersicredi.commons.schedule.enums.VoteOptionsType;
-import br.com.challengersicredi.commons.schedule.exeption.DataIntegrityViolationException;
+import br.com.challengersicredi.commons.schedule.exeption.ResourceNotFound;
+import br.com.challengersicredi.commons.schedule.exeption.SessionClosed;
 import br.com.challengersicredi.impl.schedule.repository.ScheduleRepository;
 import br.com.challengersicredi.impl.vote.entity.VoteModelEntity;
 import br.com.challengersicredi.impl.vote.mapper.VoteModelImplMapper;
 import br.com.challengersicredi.impl.vote.model.request.VoteModelImpl;
+import br.com.challengersicredi.impl.vote.model.response.BuildCountModel;
 import br.com.challengersicredi.impl.vote.model.response.VoteModelImplResponse;
 import br.com.challengersicredi.impl.vote.repository.VoteRepository;
 import lombok.AllArgsConstructor;
@@ -24,53 +26,50 @@ public class VoteService {
     private final ScheduleRepository scheduleRepository;
 
     public Mono<VoteModelImplResponse> voteScheduleSession(VoteModelImpl voteModel) {
-        return scheduleRepository
-                .findByName(voteModel.getScheduleName())
+
+        return scheduleRepository.findByName(voteModel.getScheduleName())
                 .filter(schedule -> schedule.getStatus().equals(ScheduleStatusEnum.OPEN))
                 .publishOn(Schedulers.boundedElastic())
-                .doOnNext(schedule -> {
-
+                .map(schedule -> {
                     if (LocalDateTime.now().isAfter(schedule.getExpiration())) {
                         schedule.setStatus(ScheduleStatusEnum.CLOSED);
                         scheduleRepository.save(schedule).subscribe();
-                        throw new RuntimeException();
+                        throw new SessionClosed();
                     }
-
-                    voteRepository.findByUserIdAndScheduleName(voteModel.getUserId(), voteModel.getScheduleName())
-                            .map(user -> Mono.error(new DataIntegrityViolationException("Error")))
-                            .doOnNext( a -> {
-                                schedule.setTotalVotes(schedule.getTotalVotes() + 1);
-//
-                                 VoteModelImpl.builder()
-                                        .userId(voteModel.getUserId())
-                                        .name(voteModel.getName())
-                                        .votedDate(LocalDateTime.now())
-                                        .voteOptionType(voteModel.getVoteOptionType())
-                                        .scheduleName(voteModel.getScheduleName())
-                                        .build();
-
-
-                            } )
-                            .subscribe();
-
-
-                }).map(it -> voteRepository.save(VoteModelEntity.builder()
-                        .id(it.getId())
-                        .userId(voteModel.getUserId())
-                        .name(it.getName())
-                        .votedDate(LocalDateTime.now())
-                        .voteOptionType(voteModel.getVoteOptionType())
-                        .scheduleName(it.getName())
-                        .build()))
-                .flatMap(it -> it.map(VoteModelImplMapper::mapToResponse))
-                .switchIfEmpty(Mono.empty());
+                    return VoteModelImplResponse.builder()
+                            .userId(voteModel.getUserId())
+                            .name(schedule.getName())
+                            .votedDate(LocalDateTime.now())
+                            .voteOptionType(voteModel.getVoteOptionType())
+                            .scheduleName(voteModel.getScheduleName())
+                            .build();
+                }).doOnNext(votes -> voteRepository.save(VoteModelEntity.builder()
+                                .userId(votes.getUserId())
+                                .name(votes.getName())
+                                .votedDate(LocalDateTime.now())
+                                .voteOptionType(voteModel.getVoteOptionType().toString())
+                                .scheduleName(voteModel.getScheduleName())
+                                .build())
+                        .map(VoteModelImplMapper::mapToResponse).subscribe());
     }
 
-    public Mono<VoteModelImplResponse> countVotes(String scheduleName, VoteOptionsType optionsType) {
-        return scheduleRepository.findByName(scheduleName).filter(Objects::nonNull)
-                .flatMap(a -> voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, optionsType)
-                        .map(newI -> VoteModelImplResponse.builder()
-                                .id(newI.getId())
-                                .build()));
+    public Mono<BuildCountModel> countVotes(String scheduleName) {
+        return scheduleRepository.findByName(scheduleName)
+                .filter(Objects::nonNull)
+                .flatMap(schedule ->
+                        voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, VoteOptionsType.YES)
+                                .map(yesVote -> BuildCountModel.builder()
+                                        .scheduleName(schedule.getName())
+                                        .ScheduleStatus(schedule.getStatus().toString())
+                                        .yes(yesVote.toString())
+                                        .build()).switchIfEmpty(Mono.error(new ResourceNotFound()))
+                ).flatMap(it -> voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, VoteOptionsType.NO)
+                        .map(noVote -> BuildCountModel.builder()
+                                .scheduleName(it.getScheduleName())
+                                .ScheduleStatus(it.getScheduleStatus())
+                                .yes(it.getYes())
+                                .no(noVote.toString())
+                                .build())
+                        .switchIfEmpty(Mono.error(new ResourceNotFound())));
     }
 }

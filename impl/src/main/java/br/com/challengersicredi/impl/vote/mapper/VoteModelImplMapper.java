@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 public class VoteModelImplMapper {
     public static VoteModelImplResponse mapToResponse(VoteModelEntity voteModelEntity) {
         return VoteModelImplResponse.builder()
-                .id(voteModelEntity.getId())
                 .userId(voteModelEntity.getUserId())
                 .name(voteModelEntity.getName())
                 .votedDate(voteModelEntity.getVotedDate())
                 .scheduleName(voteModelEntity.getScheduleName())
                 .build();
     }
+
 }
 

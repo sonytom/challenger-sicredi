@@ -4,6 +4,7 @@ import br.com.challengersicredi.commons.schedule.enums.VoteOptionsType;
 import br.com.challengersicredi.controller.v1.vote.model.mapper.VoteModelMapper;
 import br.com.challengersicredi.controller.v1.vote.model.request.VoteModelRequest;
 import br.com.challengersicredi.impl.vote.VoteService;
+import br.com.challengersicredi.impl.vote.model.response.BuildCountModel;
 import br.com.challengersicredi.impl.vote.model.response.VoteModelImplResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,10 +23,9 @@ public class VoteController {
         return voteService.voteScheduleSession(VoteModelMapper.mapForm(voteModelRequest));
     }
 
-    @GetMapping("/{scheduleName}/{option}")
-    public Mono<VoteModelImplResponse> countVotes (@PathVariable(value = "scheduleName") String scheduleName,
-                                                   @PathVariable(value = "option") String option) throws Exception {
-        return voteService.countVotes(scheduleName, VoteOptionsType.fromValue(option));
+    @GetMapping("/{scheduleName}")
+    public Mono<BuildCountModel> countVotes (@PathVariable(value = "scheduleName") String scheduleName) {
+        return voteService.countVotes(scheduleName);
     }
 
 
