@@ -12,7 +12,7 @@ Como baixar e  Executar o projeto :
 - 5 ./gradlew clean build
 - 6 ./gradlew bootrun
 - 7 Acessar o link http://localhost:8080/ se estiver funcionando vai aparecer a seguinte mensagem "Olá Bem vindo. para 
-- 8 Todos os end points estão aqui para pegar poder pegar facilmente o curl
+- 8 Todos os end points estão aqui, para poder pegar mais facilmente o curl
 https://www.postman.com/warped-rocket-85190/workspace/newchallenger/collection/19716956-ad49153a-436e-42a6-99e8-c1a334f2a290?action=share&creator=19716956
 
 - Não é necessario se preucupar com banco de dados ele é na nuvem pelo MongoDb Atlas
