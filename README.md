@@ -1,16 +1,34 @@
 # Challenger-sicredi
 
+Overview do projeto 
 
+Ele foi feito em multmodules, para assim ter uma segurança maior de suas entidades principais e e ter uma boa escalabilidade.
+ Para que o os módulos de acesso mais próximo ao usuário seja abstraido do resto da aplicação, é necessário ter vários arquivos gradle e assim cada um tendo suas dependências relevantes e a implementação de dos projetos que seja mais relevante para funcionar, exemplo o controller nunca vai ter acesso a service apenas a service vai ter acesso a controller.
+
+Instalação do projeto: 
+
+- Escolher a ide de sua preferencia.
+- Abrir a pasta chamada challenger sicredi.
+- Apos ir na raiz do projeto onde fica o gradle principal e baixar as dependências 
+- Depois só executar o projeto com com o main de inicialização mostrado na foto abaixo
+
+![image](https://user-images.githubusercontent.com/33350348/219103670-cfb62457-5877-41d4-a79d-2ed0b13bc818.png)
+
+Caso não ache o main para executar aqui fica o link guia 
+https://github.com/sonytom/challenger-sicredi/blob/a9071f1e25f23a17f4bdf5c39932985fec4f83ba/src/main/java/br/com/challengersicredi
+
+
+![image](https://user-images.githubusercontent.com/33350348/218972373-c839f8c7-2d43-4e08-8212-3a3a1e106610.png)
 Tecnologias usadas para fazer o projeto
 
 Link do ci : https://github.com/sonytom/challenger-sicredi/actions
 
-Java 17
-Spring Boot WebFlux 
-Lombok 
-Mongo
-Intellij
-Heroku
+- Java 17
+- Spring Boot WebFlux 
+- Lombok 
+- Mongo
+- Intellij
+- Heroku
 
 Endpoints da aplicação.
 Todos os end points estão ai tanto local como do heroku.
