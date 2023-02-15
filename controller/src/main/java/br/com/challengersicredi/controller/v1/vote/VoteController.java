@@ -23,9 +23,10 @@ public class VoteController {
         return voteService.voteScheduleSession(VoteModelMapper.mapForm(voteModelRequest));
     }
 
-    @GetMapping("/{scheduleName}")
-    public Mono<BuildCountModel> countVotes (@PathVariable(value = "scheduleName") String scheduleName) {
-        return voteService.countVotes(scheduleName);
+    @GetMapping("/{scheduleName}/{closeSession}")
+    public Mono<BuildCountModel> countVotes (@PathVariable(value = "scheduleName") String scheduleName,
+                                             @PathVariable(value = "closeSession") Integer closeSession) {
+        return voteService.countVotes(scheduleName,closeSession);
     }
 
 

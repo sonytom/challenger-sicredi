@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class BuildCountModel {
     private String scheduleName;
-    private String ScheduleStatus;
+    private String scheduleStatus;
     private String yes;
     private String no;
+    private Integer totalVotes;
 
 }

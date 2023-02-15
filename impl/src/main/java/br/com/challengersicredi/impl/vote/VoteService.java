@@ -53,23 +53,52 @@ public class VoteService {
                         .map(VoteModelImplMapper::mapToResponse).subscribe());
     }
 
-    public Mono<BuildCountModel> countVotes(String scheduleName) {
+    public Mono<BuildCountModel> countVotes(String scheduleName, Integer session) {
         return scheduleRepository.findByName(scheduleName)
                 .filter(Objects::nonNull)
                 .flatMap(schedule ->
                         voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, VoteOptionsType.YES)
                                 .map(yesVote -> BuildCountModel.builder()
                                         .scheduleName(schedule.getName())
-                                        .ScheduleStatus(schedule.getStatus().toString())
+                                        .scheduleStatus(schedule.getStatus().toString())
                                         .yes(yesVote.toString())
                                         .build()).switchIfEmpty(Mono.error(new ResourceNotFound()))
                 ).flatMap(it -> voteRepository.countByScheduleNameAndVoteOptionType(scheduleName, VoteOptionsType.NO)
                         .map(noVote -> BuildCountModel.builder()
                                 .scheduleName(it.getScheduleName())
-                                .ScheduleStatus(it.getScheduleStatus())
+                                .scheduleStatus(it.getScheduleStatus())
                                 .yes(it.getYes())
                                 .no(noVote.toString())
                                 .build())
-                        .switchIfEmpty(Mono.error(new ResourceNotFound())));
+                        .switchIfEmpty(Mono.error(new ResourceNotFound())))
+                .publishOn(Schedulers.boundedElastic())
+                .flatMap(close -> {
+
+                    scheduleRepository.findByName(close.getScheduleName())
+                            .publishOn(Schedulers.boundedElastic())
+                            .map(it -> {
+                                if (LocalDateTime.now().isAfter(it.getExpiration()) && session == 1) {
+                                    it.setStatus(ScheduleStatusEnum.CLOSED);
+                                    it.setTotalVotes(Integer.valueOf(close.getYes() + close.getNo()));
+                                    scheduleRepository.save(it).subscribe();
+                                    throw new SessionClosed();
+                                }
+                                return BuildCountModel.builder()
+                                        .scheduleName(it.getName())
+                                        .yes(close.getYes())
+                                        .no(close.getNo())
+                                        .totalVotes(it.getTotalVotes())
+                                        .scheduleStatus(it.getStatus().toString())
+                                        .build();
+                            }).subscribe();
+
+                    return scheduleRepository.findByName(close.getScheduleName()).map(schedule -> BuildCountModel.builder()
+                            .scheduleName(close.getScheduleName())
+                            .yes(close.getYes())
+                            .no(close.getNo())
+                            .totalVotes(schedule.getTotalVotes())
+                            .scheduleStatus(close.getScheduleStatus())
+                            .build());
+                });
     }
 }
