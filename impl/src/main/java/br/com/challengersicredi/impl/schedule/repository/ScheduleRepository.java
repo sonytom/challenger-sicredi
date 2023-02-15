@@ -8,7 +8,4 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface ScheduleRepository extends ReactiveMongoRepository<ScheduleModelEntity, String> {
     Mono<ScheduleModelEntity> findByName(String name);
-
-    Mono<ScheduleModelEntity> findByIdAndName(String userID, String name);
-
 }
