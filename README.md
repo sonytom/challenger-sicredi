@@ -6,14 +6,13 @@ Ele foi feito em multmodules e webflux, para assim ter uma segurança maior de s
  Para que o os módulos de acesso mais próximo ao usuário seja abstraido do resto da aplicação, é necessário ter vários arquivos gradle e assim cada um tendo suas dependências relevantes e a implementação de dos projetos que seja mais relevante para funcionar, exemplo o controller nunca vai ter acesso a service apenas a service vai ter acesso a controller.
 
 Como baixar e  Executar o projeto : 
-- 1 .Abrir o terminal no local desejado.
-- 2. git clone https://github.com/sonytom/challenger-sicredi.git
-- 3. cd challenger-sicredi
-- 4. Ter Java 17 e Gradle 8.0
-- 5. ./gradlew clean build
-- 6. ./gradlew bootrun
-- 7. Acessar o link http://localhost:8080/ se estiver funcionando vai aparecer a seguinte mensagem "Olá Bem vindo. para 
-- 8. Todos os end points estão aqui para pegar poder pegar facilmente o curl
+- 1 Abrir o terminal no local desejado.
+- 2 git clone https://github.com/sonytom/challenger-sicredi.git
+- 3 cd challenger-sicredi
+- 5 ./gradlew clean build
+- 6 ./gradlew bootrun
+- 7 Acessar o link http://localhost:8080/ se estiver funcionando vai aparecer a seguinte mensagem "Olá Bem vindo. para 
+- 8 Todos os end points estão aqui para pegar poder pegar facilmente o curl
 https://www.postman.com/warped-rocket-85190/workspace/newchallenger/collection/19716956-ad49153a-436e-42a6-99e8-c1a334f2a290?action=share&creator=19716956
 
 - Não é necessario se preucupar com banco de dados ele é na nuvem pelo MongoDb Atlas
