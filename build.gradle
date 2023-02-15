@@ -20,14 +20,9 @@ repositories {
 
 dependencies {
     implementation project(':controller')
-   // implementation 'org.springframework.boot:spring-boot-starter-security'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }
 
-//    tasks.named('test') {
-//        useJUnitPlatform()
-//    }
 
 allprojects {
     apply plugin: 'java'
@@ -45,13 +40,9 @@ allprojects {
     }
 
     dependencies {
-
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         implementation 'org.springframework.boot:spring-boot-starter-webflux'
-//        implementation 'org.springframework.security:spring-security-config'
-//        implementation 'org.springframework.security:spring-security-web:6.0.1'
-      //  implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
         implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'io.projectreactor:reactor-test'
