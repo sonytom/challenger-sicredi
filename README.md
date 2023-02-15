@@ -2,7 +2,7 @@
 
 Overview do projeto 
 
-Ele foi feito em multmodules, para assim ter uma segurança maior de suas entidades principais e e ter uma boa escalabilidade.
+Ele foi feito em multmodules e webflux, para assim ter uma segurança maior de suas entidades principais e e ter uma boa escalabilidade.
  Para que o os módulos de acesso mais próximo ao usuário seja abstraido do resto da aplicação, é necessário ter vários arquivos gradle e assim cada um tendo suas dependências relevantes e a implementação de dos projetos que seja mais relevante para funcionar, exemplo o controller nunca vai ter acesso a service apenas a service vai ter acesso a controller.
 
 Instalação do projeto: 
@@ -11,6 +11,8 @@ Instalação do projeto:
 - Abrir a pasta chamada challenger sicredi.
 - Apos ir na raiz do projeto onde fica o gradle principal e baixar as dependências 
 - Depois só executar o projeto com com o main de inicialização mostrado na foto abaixo
+- Não é necessario se preucupar com banco de dados ele é na nuvem pelo MongoDb Atlas
+- Nos resourses vai ter o link de acesso usuario e senha caso precise.
 
 ![image](https://user-images.githubusercontent.com/33350348/219103670-cfb62457-5877-41d4-a79d-2ed0b13bc818.png)
 
