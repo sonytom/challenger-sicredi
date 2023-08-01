@@ -1,2 +1,1 @@
 rootProject.name = 'challenger-sicredi'
-include 'controller','impl','commons'
